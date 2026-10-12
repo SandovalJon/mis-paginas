@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mis páginas</title>
+<meta name="description" content="Índice de los sitios publicados en GitHub Pages">
+<style>
+  :root {
+    --bg: #0f1117;
+    --card: #1a1d27;
+    --border: #2a2e3d;
+    --text: #e6e8ee;
+    --muted: #8a90a5;
+    --accent: #6c8cff;
+    --accent2: #b06cff;
+    --ok: #35d07f;
+    --warn: #ffb648;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    min-height: 100vh;
+    padding: 40px 24px 60px;
+  }
+  .wrap { max-width: 860px; margin: 0 auto; }
+  header { margin-bottom: 28px; }
+  h1 {
+    font-size: 1.9rem;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  header p { color: var(--muted); margin-top: 8px; font-size: .95rem; }
+  .toolbar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 18px;
+  }
+  .input {
+    flex: 1;
+    min-width: 220px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 11px 14px;
+    color: var(--text);
+    font-size: .95rem;
+  }
+  .input:focus { outline: none; border-color: var(--accent); }
+  .btn {
+    padding: 11px 16px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    background: var(--card);
+    color: var(--text);
+    font-size: .9rem;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+  }
+  .btn:hover { border-color: var(--accent); }
+  .btn.primary {
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    border: none;
+    color: #fff;
+    font-weight: 600;
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 16px;
+  }
+  .card {
+    display: block;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 13px;
+    padding: 18px;
+    text-decoration: none;
+    color: inherit;
+    transition: transform .15s, border-color .15s;
+  }
+  .card:hover { transform: translateY(-3px); border-color: var(--accent); }
+  .card .top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
+  }
+  .card h2 { font-size: 1.02rem; word-break: break-word; }
+  .card p { color: var(--muted); font-size: .85rem; line-height: 1.45; min-height: 2.5em; }
+  .card .url {
+    margin-top: 12px;
+    font-size: .74rem;
+    color: var(--accent);
+    word-break: break-all;
+    font-family: ui-monospace, Consolas, monospace;
+  }
+  .pill {
+    font-size: .66rem;
+    padding: 3px 9px;
+    border-radius: 999px;
+    background: rgba(53,208,127,.15);
+    color: var(--ok);
+    text-transform: uppercase;
+    letter-spacing: .05em;
+    white-space: nowrap;
+  }
+  .pill.stale { background: rgba(255,182,72,.15); color: var(--warn); }
+  .status { color: var(--muted); font-size: .88rem; margin-bottom: 16px; }
+  .status.err { color: var(--warn); }
+  .note {
+    margin-top: 26px;
+    font-size: .78rem;
+    color: var(--muted);
+    line-height: 1.55;
+    border-left: 3px solid var(--border);
+    padding-left: 12px;
+  }
+  code {
+    font-family: ui-monospace, Consolas, monospace;
+    background: #12141c;
+    padding: 2px 6px;
+    border-radius: 5px;
+    font-size: .95em;
+  }
+  @media (max-width: 560px) {
+    body { padding: 26px 16px 40px; }
+    h1 { font-size: 1.5rem; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Mis páginas</h1>
+    <p>Índice de los sitios publicados en GitHub Pages</p>
+  </header>
+
+  <div class="toolbar">
+    <input class="input" id="filter" type="search" placeholder="Filtrar por nombre o descripción…" autocomplete="off">
+    <button class="btn" id="refreshBtn">↻ Actualizar</button>
+    <a class="btn primary" id="repoLink" href="#" target="_blank" rel="noopener">Ver repos</a>
+  </div>
+
+  <div class="status" id="status">Cargando…</div>
+
+  <div class="grid" id="grid"></div>
+
+  <p class="note">
+    La lista se lee de la API pública de GitHub, así que se actualiza sola en cuanto publicas un sitio nuevo.
+    Si la API no responde (por ejemplo, si agotas las 60 peticiones por hora sin cuenta), se muestra la copia local.
+    Solo aparecen los repositorios públicos con GitHub Pages activo.
+  </p>
+</div>
+
+<script>
+const USERNAME = 'SandovalJon';
+const API = 'https://api.github.com/users/' + USERNAME + '/repos?per_page=100&sort=updated';
+const REPO_URL = 'https://github.com/' + USERNAME;
+
+// Copia local de respaldo: se usa si la API no responde.
+// Fecha de captura: 2026-10-12 (verificada con la API pública).
+const FALLBACK = [
+  {
+    name: 'Metadata-WAV-Studio-by-SandovalJon',
+    description: 'Editor de metadatos y convertidor MP3 a WAV - funciona 100% en el navegador',
+    updated_at: '2026-10-04T23:13:17Z',
+  },
+  {
+    name: 'Ruleta-by-SandovalJon',
+    description: null,
+    updated_at: '2026-10-04T20:13:39Z',
+  },
+  {
+    name: 'send-anywhere-p2p',
+    description: 'Comparte archivos entre dispositivos con codigo de 6 digitos, transferencia P2P',
+    updated_at: '2026-10-12T15:34:41Z',
+  },
+];
+
+const $ = id => document.getElementById(id);
+let sites = [];
+let query = '';
+
+function siteUrl(name) {
+  return 'https://' + USERNAME.toLowerCase() + '.github.io/' + name + '/';
+}
+
+function daysSince(iso) {
+  if (!iso) return null;
+  return Math.floor((Date.now() - new Date(iso).getTime()) / 86400000);
+}
+
+function render() {
+  const grid = $('grid');
+  const q = query.trim().toLowerCase();
+  const list = q
+    ? sites.filter(s => (s.name + ' ' + (s.description || '')).toLowerCase().includes(q))
+    : sites;
+
+  grid.innerHTML = '';
+  if (!list.length) {
+    grid.innerHTML = '<p class="status">Sin resultados para "' + query + '".</p>';
+    return;
+  }
+
+  for (const s of list) {
+    const url = siteUrl(s.name);
+    const days = daysSince(s.updated_at);
+    const a = document.createElement('a');
+    a.className = 'card';
+    a.href = url;
+    a.target = '_blank';
+    a.rel = 'noopener';
+
+    const top = document.createElement('div');
+    top.className = 'top';
+    const h = document.createElement('h2');
+    h.textContent = s.name;
+    const pill = document.createElement('span');
+    pill.className = 'pill' + (days !== null && days > 180 ? ' stale' : '');
+    pill.textContent = days === null ? 'Pages' : days === 0 ? 'hoy' : 'hace ' + days + ' d';
+    top.appendChild(h);
+    top.appendChild(pill);
+
+    const p = document.createElement('p');
+    p.textContent = s.description || 'Sin descripción';
+
+    const u = document.createElement('div');
+    u.className = 'url';
+    u.textContent = url;
+
+    a.appendChild(top);
+    a.appendChild(p);
+    a.appendChild(u);
+    grid.appendChild(a);
+  }
+}
+
+async function load() {
+  $('status').className = 'status';
+  $('status').textContent = 'Cargando…';
+  try {
+    const res = await fetch(API);
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const repos = await res.json();
+    sites = repos.filter(r => r.has_pages).sort((a, b) => a.name.localeCompare(b.name));
+    $('status').textContent = sites.length + (sites.length === 1 ? ' sitio' : ' sitios') + ' · datos en vivo';
+  } catch (err) {
+    sites = FALLBACK.slice().sort((a, b) => a.name.localeCompare(b.name));
+    $('status').className = 'status err';
+    $('status').textContent = 'No se pudo contactar con la API (' + err.message + '). Se muestra la copia local.';
+  }
+  render();
+}
+
+$('filter').addEventListener('input', e => {
+  query = e.target.value;
+  render();
+});
+$('refreshBtn').addEventListener('click', load);
+$('repoLink').href = REPO_URL;
+
+load();
+</script>
+</body>
+</html>
