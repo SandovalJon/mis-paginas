@@ -21,7 +21,7 @@ Lectura por defecto: `7. MEMORIA` y este mapa. Las secciones `1`–`5` se abren 
 
 - Qué es el proyecto: índice web de los sitios publicados en GitHub Pages del usuario. Lee los repositorios públicos con Pages activo y los muestra como tarjetas con enlace directo. No es un sitio de contenido propio, sino un panel de navegación hacia los demás.
 - Stack: HTML/CSS/JavaScript en un único archivo (`index.html`, 275 líneas, 7.829 bytes). Sin build, sin framework, sin gestor de dependencias, sin CDN.
-- Rutas principales: `index.html` (todo el proyecto). `MISPAGINAS-Custodia.md` (este documento).
+- Rutas principales: carpeta del proyecto `Mis Paginas`; dentro, `index.html` (todo el proyecto) y `MISPAGINAS-Custodia.md` (este documento).
 - Repo git y estado: `https://github.com/SandovalJon/mis-paginas.git`, rama `master`, un solo commit. `git status` limpio tras el arranque.
 - URLs: producción `https://sandovaljon.github.io/mis-paginas/` (HTTP 200, 7.829 bytes servidos, idéntico al archivo local). Repositorio: `https://github.com/SandovalJon/mis-paginas`.
 - Versión del código: `64b6d98` ("Indice de sitios publicados en GitHub Pages").
@@ -95,7 +95,8 @@ Sin entradas archivadas todavía.
 - [opencode-1] Tarea activa: ninguna. Arranque Ruta A ejecutado el 2026-10-12 con la creación de este documento, tras publicar la v1.
 - [opencode-1] Decisión: proyecto independiente con repo `mis-paginas` y no una página dentro de `send-anywhere-p2p` — motivo: el índice no pertenece a la app P2P y su `index.html` es el sitio publicado; mezclar los dos Would acoplar ambos despliegues — estado: tomada (confirmada por el usuario).
 - [opencode-1] Decisión: listar en vivo desde la API pública con copia local de respaldo — motivo: se actualiza solo al publicar sitios nuevos sin mantenimiento, a cambio de depender de la cuota anónima de 60 peticiones por hora e IP — estado: tomada.
-- [opencode-1] Decisión: `NOMBRE` es `MISPAGINAS` — motivo: carpeta y repo coinciden, no hay ambigüedad que resolver — estado: tomada.
+- [opencode-1] Decisión: `NOMBRE` es `MISPAGINAS` — motivo: se aplica la convención del prompt al nombre de la carpeta y al repo, unidos en mayúsculas y sin espacios; el repo es `mis-paginas` y la carpeta es `Mis Paginas` — estado: tomada.
+- [opencode-1] Cambio pedido por el usuario el 2026-10-12: la carpeta pasó de `MISPAGINAS` a `Mis Paginas`, con mayúscula solo en la primera letra de cada palabra, para igualarse al estilo de las carpetas hermanas (`Ruleta by SandovalJon`, `Bases de datos`). El nombre del archivo de custodia no cambia porque `MISPAGINAS` sigue siendo la unión en mayúsculas de la carpeta. El renombrado es solo local: no afecta al repo ni al sitio publicado.
 - [opencode-1] Decisión: no incluir repos privados ni sin Pages — motivo: el objetivo son los sitios visitables sin sesión — estado: tomada.
 - Preferencias del usuario: español; respuestas concisas; quiere que el agente ejecute y publique sin pedir confirmación paso a paso. Acepta la estructura de custodio y delega decisiones estructurales cuando se le presentan con opciones.
 - Comprometidos: repo `mis-paginas` con Pages activo en `master`. Este proyecto es independiente de `SENDAWHEREP2P` y tiene su propio archivo de custodia.
