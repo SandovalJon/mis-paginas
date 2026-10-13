@@ -95,6 +95,14 @@
     margin-bottom: 8px;
   }
   .card h2 { font-size: 1.02rem; word-break: break-word; }
+  .card .repo {
+    font-size: .7rem;
+    color: var(--muted);
+    font-family: ui-monospace, Consolas, monospace;
+    margin-top: -4px;
+    margin-bottom: 6px;
+    word-break: break-all;
+  }
   .card p { color: var(--muted); font-size: .85rem; line-height: 1.45; min-height: 2.5em; }
   .card .url {
     margin-top: 12px;
@@ -145,7 +153,7 @@
   </header>
 
   <div class="toolbar">
-    <input class="input" id="filter" type="search" placeholder="Filtrar por nombre o descripción…" autocomplete="off">
+    <input class="input" id="filter" type="search" placeholder="Filtrar por título, repo o descripción…" autocomplete="off">
     <button class="btn" id="refreshBtn">↻ Actualizar</button>
     <a class="btn primary" id="repoLink" href="#" target="_blank" rel="noopener">Ver repos</a>
   </div>
@@ -166,6 +174,15 @@ const USERNAME = 'SandovalJon';
 const API = 'https://api.github.com/users/' + USERNAME + '/repos?per_page=100&sort=updated';
 const REPO_URL = 'https://github.com/' + USERNAME;
 
+// Título legible de cada sitio, tal como aparece en su propia pagina.
+// Verificado leyendo el <title> de cada sitio publicado (2026-10-12).
+const TITLES = {
+  'Metadata-WAV-Studio-by-SandovalJon': 'Audio Studio',
+  'Ruleta-by-SandovalJon': 'Ruleta de Imágenes',
+  'send-anywhere-p2p': 'Send Anywhere',
+  'mis-paginas': 'Mis páginas',
+};
+
 // Copia local de respaldo: se usa si la API no responde.
 // Fecha de captura: 2026-10-12 (verificada con la API pública).
 const FALLBACK = [
@@ -183,6 +200,11 @@ const FALLBACK = [
     name: 'send-anywhere-p2p',
     description: 'Comparte archivos entre dispositivos con codigo de 6 digitos, transferencia P2P',
     updated_at: '2026-10-12T15:34:41Z',
+  },
+  {
+    name: 'mis-paginas',
+    description: 'Indice de los sitios publicados en GitHub Pages',
+    updated_at: '2026-10-12T00:00:00Z',
   },
 ];
 
@@ -203,7 +225,9 @@ function render() {
   const grid = $('grid');
   const q = query.trim().toLowerCase();
   const list = q
-    ? sites.filter(s => (s.name + ' ' + (s.description || '')).toLowerCase().includes(q))
+    ? sites.filter(s =>
+        (s.name + ' ' + (TITLES[s.name] || '') + ' ' + (s.description || ''))
+          .toLowerCase().includes(q))
     : sites;
 
   grid.innerHTML = '';
@@ -224,12 +248,20 @@ function render() {
     const top = document.createElement('div');
     top.className = 'top';
     const h = document.createElement('h2');
-    h.textContent = s.name;
+    h.textContent = TITLES[s.name] || s.name;
     const pill = document.createElement('span');
     pill.className = 'pill' + (days !== null && days > 180 ? ' stale' : '');
     pill.textContent = days === null ? 'Pages' : days === 0 ? 'hoy' : 'hace ' + days + ' d';
     top.appendChild(h);
     top.appendChild(pill);
+
+    // Nombre tecnico del repositorio, para no perder la referencia tecnica
+    if (TITLES[s.name] && TITLES[s.name] !== s.name) {
+      const repo = document.createElement('div');
+      repo.className = 'repo';
+      repo.textContent = s.name;
+      a.appendChild(repo);
+    }
 
     const p = document.createElement('p');
     p.textContent = s.description || 'Sin descripción';
