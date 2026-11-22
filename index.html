@@ -175,36 +175,66 @@ const API = 'https://api.github.com/users/' + USERNAME + '/repos?per_page=100&so
 const REPO_URL = 'https://github.com/' + USERNAME;
 
 // Título legible de cada sitio, tal como aparece en su propia pagina.
-// Verificado leyendo el <title> de cada sitio publicado (2026-10-12).
+// Verificado leyendo el <title> de cada sitio publicado (2026-11-21).
 const TITLES = {
   'Metadata-WAV-Studio-by-SandovalJon': 'Audio Studio',
   'Ruleta-by-SandovalJon': 'Ruleta de Imágenes',
-  'send-anywhere-p2p': 'Send Anywhere',
+  'marca-de-agua': 'Marca de Agua',
+  'marca-de-agua-videos': 'Marca de Agua · Videos',
   'mis-paginas': 'Mis páginas',
+  'nuevo-reproductor-de-musica': 'Sonando',
+  'reproductor-de-musica': 'Reproductor de Música',
+  'send-anywhere-p2p': 'Send Anywhere',
+  'ytmp3': 'YTMusic → MP3',
 };
 
 // Copia local de respaldo: se usa si la API no responde.
-// Fecha de captura: 2026-10-12 (verificada con la API pública).
+// Fecha de captura: 2026-11-21 (verificada con la API pública).
 const FALLBACK = [
   {
     name: 'Metadata-WAV-Studio-by-SandovalJon',
-    description: 'Editor de metadatos y convertidor MP3 a WAV - funciona 100% en el navegador',
-    updated_at: '2026-10-04T23:13:17Z',
+    description: 'Edita metadatos, cambia portadas y convierte entre MP3 y WAV',
+    updated_at: '2026-10-14T05:03:46Z',
   },
   {
     name: 'Ruleta-by-SandovalJon',
-    description: null,
-    updated_at: '2026-10-04T20:13:39Z',
+    description: 'Ruleta de imágenes para sorteos y giros aleatorios',
+    updated_at: '2026-10-13T14:55:01Z',
   },
   {
-    name: 'send-anywhere-p2p',
-    description: 'Comparte archivos entre dispositivos con codigo de 6 digitos, transferencia P2P',
-    updated_at: '2026-10-12T15:34:41Z',
+    name: 'marca-de-agua',
+    description: 'Añade una marca de agua de texto a varias fotos a la vez: abajo a la derecha, 50% de opacidad. 100% local en el navegador, descarga en ZIP.',
+    updated_at: '2026-11-11T02:45:43Z',
+  },
+  {
+    name: 'marca-de-agua-videos',
+    description: 'Marca de agua de texto en varios videos a la vez: abajo a la derecha, 50% de opacidad. 100% local en el navegador, descarga en ZIP.',
+    updated_at: '2026-11-09T17:21:37Z',
   },
   {
     name: 'mis-paginas',
-    description: 'Indice de los sitios publicados en GitHub Pages',
-    updated_at: '2026-10-12T00:00:00Z',
+    description: 'Índice de los sitios publicados en GitHub Pages',
+    updated_at: '2026-10-13T14:40:56Z',
+  },
+  {
+    name: 'nuevo-reproductor-de-musica',
+    description: null,
+    updated_at: '2026-11-17T14:31:18Z',
+  },
+  {
+    name: 'reproductor-de-musica',
+    description: 'Reproductor web de música 100% local en el navegador, sin subir canciones a internet.',
+    updated_at: '2026-11-15T06:58:24Z',
+  },
+  {
+    name: 'send-anywhere-p2p',
+    description: 'Comparte archivos entre dispositivos con código de 6 dígitos, transferencia P2P',
+    updated_at: '2026-10-24T16:41:54Z',
+  },
+  {
+    name: 'ytmp3',
+    description: 'Descarga playlists de YouTube Music como MP3, en tu propia PC. Uso personal, local y de código abierto.',
+    updated_at: '2026-11-11T04:41:46Z',
   },
 ];
 
