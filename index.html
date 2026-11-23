@@ -5,6 +5,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Mis páginas</title>
 <meta name="description" content="Índice de los sitios publicados en GitHub Pages">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#0f1117">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Mis páginas">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
 <style>
   :root {
     --bg: #0f1117;
@@ -155,6 +162,7 @@
   <div class="toolbar">
     <input class="input" id="filter" type="search" placeholder="Filtrar por título, repo o descripción…" autocomplete="off">
     <button class="btn" id="refreshBtn">↻ Actualizar</button>
+    <button class="btn" id="installBtn" hidden>📲 Instalar app</button>
     <a class="btn primary" id="repoLink" href="#" target="_blank" rel="noopener">Ver repos</a>
   </div>
 
@@ -323,6 +331,30 @@ async function load() {
   }
   render();
 }
+
+// Instalación como app (PWA): registro del service worker y botón de instalar
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('sw.js').catch(() => {});
+  });
+}
+let deferredInstall = null;
+window.addEventListener('beforeinstallprompt', e => {
+  e.preventDefault();
+  deferredInstall = e;
+  $('installBtn').hidden = false;
+});
+$('installBtn').addEventListener('click', async () => {
+  if (!deferredInstall) return;
+  deferredInstall.prompt();
+  try { await deferredInstall.userChoice; } catch (err) {}
+  deferredInstall = null;
+  $('installBtn').hidden = true;
+});
+window.addEventListener('appinstalled', () => {
+  deferredInstall = null;
+  $('installBtn').hidden = true;
+});
 
 $('filter').addEventListener('input', e => {
   query = e.target.value;
